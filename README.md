@@ -1,5 +1,5 @@
 # Compiler-Construction
-Another one of the numerous failed compiler project. Compiler Construction course - BITS F363
+Another one of the myriad compiler projects. Compiler Construction course - CS F363 at BITS, Pilani - 2018.
 
 ```
 make
