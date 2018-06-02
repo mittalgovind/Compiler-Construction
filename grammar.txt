@@ -1,0 +1,44 @@
+// 2014B4A70530P
+// GOVIND MITTAL
+
+1.	<mainFunction> ===> MAIN SQO SQC <stmtAndFunctionDefs> END   
+2.	<stmtAndFunctionDefs> ===> <stmtOrFunctionOrDef> <moreStatements>
+3.	<moreStatements> ===> <stmtAndFunctionDefs> | ϵ 
+4.	<stmtOrFunctionOrDef> ===> <stmt> | <functionDef>
+5.	<stmt> ===> <declarationStmt> | <assignmentStmt> | <conditionalStmt> | <ioStmt> | <funCallStmt>  
+6.	<functionDef> ===> FUNCTION SQO <parameter_list>  SQC ASSIGNOP FUNID SQO <parameter_list> SQC <stmtAndFunctionDefs> END  
+7.	<parameter_list> ===> <type> ID <remainingList> | ϵ 
+8.	<type> ===> INT | REAL | STRING | MATRIX  
+9.	<remainingList> ===> COMMA <parameter_list> | ϵ 
+10.	<declarationStmt> ===> <type> <var_list> SEMICOLON   
+11.	<assignmentStmt> ===> <leftHandSide> ASSIGNOP <rightHandSide> SEMICOLON  
+12.	<funCallStmt> ===> <functionCall> SEMICOLON
+13.	<leftHandSide> ===> ID | SQO <var_list> SQC  
+14.	*<rightHandSide> ===> <arithmeticExpression> | <functionCall>  | <sizeOf>
+15. <functionCall> ===> FUNID OP <input_list> CL
+16.	<input_list> ===> <var_list> | ϵ
+17. <sizeOf> ===> SIZE ID
+18.	<conditionalStmt> ===> IF OP<booleanExpression>CL <otherStmts><else_stmt> ENDIF  
+19.	<else_stmt> ===> ELSE <otherStmts> | ϵ
+20. <otherStmts> ===>  <stmtOrFunctionOrDefs> 
+21.	<ioStmt> ===> READ OP ID CL SEMICOLON | PRINT OP ID CL SEMICOLON
+22.	*<arithmeticExpression> ====> OP <arithmeticExpression> CL <arith_operator> OP <arithmeticExpression> CL
+23.	*<arithmeticExpression> ===> <sub_expression><term>
+24.	<term> ===>  <operator1><sub_expression><term> | ϵ
+25.	<sub_expression> ===> <var><factor>
+26.	<factor> ===> <operator2><var><factor> | ϵ
+27.	<operator1> ===> PLUS | MINUS
+28.	<operator2> ===> MUL | DIV
+29. <arith_operator> ===> PLUS | MINUS | MUL | DIV
+30.	<booleanExpression> ===> OP <booleanExpression> CL <logicalOp> OP <booleanExpression> CL
+31.	<booleanExpression> ===> <var><relationalOp><var>  | NOT OP <booleanExpression>  CL
+32.	<var> ===> ID | NUM | RNUM | STR | <matrixElement>  
+33.	<matrixElement> ===> SQO <matrixValues> SQC
+34. <matrixValues> ===> <row_list><rem_rowlist>
+35.	<rem_rowlist> ===> SEMICOLON <matrixValues> | ϵ
+36. <row_list> ===> NUM <rest_list>
+37. <rest_list> ===> COMMA <row_list> | ϵ
+38.	<logicalOp> ===> AND | OR
+39.	<relationalOp> ===> LT | LE | EQ | GT | GE | NE  
+40.	<var_list> ===> <var> <more_ids>  
+41.	<more_ids> ===> COMMA <var_list> | ϵ

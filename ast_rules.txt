@@ -1,0 +1,122 @@
+// 2014B4A70530P
+// GOVIND MITTAL
+
+<mainFunction> ===> MAIN SQO SQC <stmtAndFunctionDefs> END   
+<mainFunction>.addr ===> <stmtAndFunctionDefs>.addr 
+
+<stmtAndFunctionDefs> ===> <stmtOrFunctionOrDef> <moreStatements>
+<stmtAndFunctionDefs>.addr ===> STMT_FUNCS{<stmtOrFunctionOrDef>.addr, <moreStatements>.addr}
+
+<moreStatements> ===> <stmtAndFunctionDefs> | ϵ 
+<moreStatements>.addr ===> <stmtAndFunctionDefs>.addr | NULL
+
+<stmtOrFunctionOrDef> ===> <stmt> | <functionDef>
+<stmtAndFunctionDef>.addr ===> <stmt>.addr | <functionDef>.addr
+
+<stmt> ===> <declarationStmt> | <assignmentStmt> | <conditionalStmt> | <ioStmt> | <funCallStmt>  
+<stmt>.addr ===> <declarationStmt>.addr | <assignmentStmt>.addr | <conditionalStmt>.addr | <ioStmt>.addr | <funCallStmt>.addr  
+
+<functionDef> ===> FUNCTION SQO <parameter_list>  SQC ASSIGNOP FUNID SQO <parameter_list> SQC <stmtAndFunctionDefs> END  
+<functionDef>.addr ===> FUNC_DEF{<parameter_list>.addr, FUNID.addr, <parameter_list>.addr, <stmtAndFunctionDefs>.addr}
+
+<parameter_list> ===> <type> ID <remainingList>
+<parameter_list>.addr ===> PARAM_NODE{<type>.addr, ID.addr, <remainingList>.addr}
+
+<type> ===> INT | REAL | STRING | MATRIX  
+<type>.addr ===> INT.addr | REAL.addr | STRING.addr | MATRIX.addr
+
+<remainingList> ===> COMMA <parameter_list> | ϵ 
+<remainingList>.addr ===> <parameter_list>.addr | NULL
+
+<declarationStmt> ===> <type> <var_list> SEMICOLON   
+<declarationStmt>.addr ===> DECL_STMT{<type>.addr, <var_list>.addr}
+
+<assignmentStmt> ===> <leftHandSide> ASSIGNOP <rightHandSide> SEMICOLON  
+<assignmentStmt> ===> ASSN_STMT{ASSIGNOP.addr, <leftHandSide>.addr, <rightHandSide>.addr}
+
+<funCallStmt> ===> <functionCall> SEMICOLON
+<funCallStmt>.addr ===> <functionCall>.addr
+
+<leftHandSide> ===> ID | SQO <var_list> SQC  
+<leftHandSide>.addr ===> ID.addr | <var_list>.addr
+
+<rightHandSide> ===> <arithmeticExpression> | <functionCall>  | <sizeOf>
+<rightHandSide>.addr ===> <arithmeticExpression>.addr | <functionCall>.addr  | <sizeOf>.addr
+
+<functionCall> ===> FUNID OP <input_list> CL
+<functionCall>.addr ===> FUNC_CALL{FUNID.addr, <input_list>.addr}
+
+<input_list> ===> <var_list> | ϵ
+<input_list>.addr ===> <var_list>.addr | NULL
+
+<sizeOf> ===> SIZE ID
+<sizeOf>.addr ===> ID.addr
+
+<conditionalStmt> ===> IF OP<booleanExpression>CL <stmtAndFunctionDefs><else_stmt> ENDIF  
+<conditionalStmt>.addr ===> COND_STMT{<booleanExpression>.addr, <otherStmts>.addr, <else_stmt>.addr}
+
+<else_stmt> ===> ELSE <stmtAndFunctionDefs> | ϵ
+<else_stmt>.addr ===> <stmtAndFunctionDefs>.addr | NULL
+
+<ioStmt> ===> READ OP ID CL SEMICOLON | PRINT OP ID CL SEMICOLON
+<ioStmt>.addr ===> IO_STMT{READ.addr, ID.addr} | IO_STMT{PRINT.addr, ID.addr}
+
+<arithmeticExpression> ====> OP <arithmeticExpression> CL <arith_operator> OP <arithmeticExpression> CL
+<arithmeticExpression> ====> ARITH_EXPR{<arith_operator>.addr, <arithmeticExpression>.addr, <arithmeticExpression>.addr}
+
+<arithmeticExpression> ===> <sub_expression><term>
+<arithmeticExpression>.addr ===> {<sub_expression>.addr, <term>.addr}
+
+<term> ===>  <operator1><sub_expression><term> | ϵ
+<term>.addr ===> TERM{<operator1>.addr, <sub_expression>.addr, <term>.addr} | NULL
+
+<sub_expression> ===> <var><factor>
+<sub_expression> ===> SUB_EXPR{<var>.addr, <factor>.addr}
+
+<factor> ===> <operator2><var><factor> | ϵ
+<factor>.addr ===> FACTOR{<operator2>.addr, <var>.addr, <factor>.addr} | NULL
+
+<operator1> ===> PLUS | MINUS
+<operator1>.addr ===> PLUS.addr | MINUS.addr
+
+<operator2> ===> MUL | DIV  
+<operator2>.addr ===> MUL.addr | DIV.addr  
+
+<arith_operator> ===> PLUS | MINUS | MUL | DIV
+<arith_operator>.addr ===> PLUS.addr | MINUS.addr | MUL.addr | DIV.addr
+
+<booleanExpression> ===> OP <booleanExpression> CL <logicalOp> OP <booleanExpression> CL
+<booleanExpression> ===> BOOL_EXPR{<logicalOp>.addr, <booleanExpression>.addr, <booleanExpression>.addr}
+
+<booleanExpression> ===> <var><relationalOp><var>  | NOT OP <booleanExpression>  CL
+<booleanExpression> ===> BOOL_EXPR{<relationalOp>.addr, <var>.addr, <var>.addr}  | BOOL_EXPR{NOT.addr, <booleanExpression>.addr}
+
+<var> ===> ID | NUM | RNUM | STR | <matrixElement>  
+<var>.addr ===> ID.addr | NUM.addr | RNUM.addr | STR.addr | <matrixElement>.addr  
+
+<matrixElement> ===> SQO <matrixValues> SQC
+<matrixElement>.addr ===> <matrixValues>.addr
+
+<matrixValues> ===> <row_list><rem_rowlist>
+<matrixValues>.addr ===> MATRIX_VAL{<row_list>.addr, <rem_rowlist>.addr}
+
+<rem_rowlist> ===> SEMICOLON <matrixValues> | ϵ
+<rem_rowlist> ===> <matrixValues>.addr | NULL
+
+<row_list> ===> NUM <rest_list>
+<row_list> ===> ROW_LIST{NUM.addr, <rest_list>.addr}
+
+<rest_list> ===> COMMA <row_list> | ϵ
+<rest_list>.addr ===> <row_list>.addr | NULL
+
+<logicalOp> ===> AND | OR 
+<logicalOp>.addr ===> AND.addr | OR.addr 
+
+<relationalOp> ===> LT | LE | EQ | GT | GE | NE  
+<relationalOp>.addr ===> LT.addr | LE.addr | EQ.addr | GT.addr | GE.addr | NE.addr  
+
+<var_list> ===> ID <more_ids>  
+<var_list>.addr ===> VAR_LIST{ID.addr, <more_ids>.addr}
+
+<more_ids> ===> COMMA <var_list> | ϵ
+<more_ids> ===> <var_list>.addr | NULL
